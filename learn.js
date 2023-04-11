@@ -23,6 +23,7 @@ var errorCounter;
 var iterationCounter;
 var poseCounter;
 var target;
+var poseStatus=false;
 
 var timeLeft;
 
@@ -103,7 +104,7 @@ function classifyPose() {
 		});
 	} catch (e) {}
 
-	console.log({ errors });
+	updateError( errors );
 
 	if (pose) {
 		let inputs = [];
@@ -114,9 +115,27 @@ function classifyPose() {
 			inputs.push(y);
 		}
 		yogi.classify(inputs, gotResult);
+		poseStatus = true;
 	} else {
 		console.log("Pose not found");
+		poseStatus = false;
 		setTimeout(classifyPose, 100);
+	}
+}
+
+function updateError(error) {
+	if (poseStatus) {
+		document.getElementById("leftElbow").textContent = `Left Elbow :${Math.round(error.leftElbow)}°`;
+		document.getElementById("rightElbow").textContent = `Right Elbow :${Math.round(error.rightElbow)}°`;
+		document.getElementById("leftShoulder").textContent = `Left Shoulder :${Math.round(error.leftShoulder)}°`;
+		document.getElementById("rightShoulder").textContent = `Right Shoulder :${Math.round(error.rightShoulder)}°`;
+		document.getElementById("leftHip").textContent = `Left Hip :${Math.round(error.leftHip)}°`;
+		document.getElementById("rightHip").textContent = `Right Hip :${Math.round(error.rightHip)}°`;
+		document.getElementById("leftKnee").textContent = `Left Knee :${Math.round(error.leftKnee)}°`;
+		document.getElementById("rightKnee").textContent = `Right Knee :${Math.round(error.rightKnee)}°`;
+	}
+	else {
+		document.getElementById("leftElbow").textContent = "Pose not found";
 	}
 }
 
